@@ -3,10 +3,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
-
-from src.discretization import continuous_cols, methods, apply_edges
 
 
 # Dataset path
@@ -130,37 +126,3 @@ def split_data(clean):
     )
 
     return train, test
-
-
-def prepare_features(X_train, X_val, X_test=None, *, representation, n_bins, scale_numeric):
-    splits = [X_train.copy(), X_val.copy()]
-
-    if representation != 'original':
-        edge_function = methods[representation]
-
-        for col in continuous_cols:
-            edges = edge_function(splits[0][col], n_bins)
-
-            for split in splits:
-                split[col] = apply_edges(split[col], edges)
-
-        encoder = ColumnTransformer([
-            (
-                'numeric',
-                StandardScalar() if scale_numeric else 'passthrough',
-                numeric_cols
-            ),
-            (
-                'categorical',
-                OneHotEncoder(
-                    handle_unknown='ignore',
-                    sparse_output=False
-                ),
-                [c for c in categoric_cols if c != 'income']
-            )
-        ])
-
-        transformed = [encoder.fit_transform(splits[0])]
-        transformed.extend(encoder.transform(split) for split in splits[1:])
-
-        return transformed
