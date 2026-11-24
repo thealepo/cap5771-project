@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScalar
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from src.discretization import continuous_cols, methods, apply_edges
 
