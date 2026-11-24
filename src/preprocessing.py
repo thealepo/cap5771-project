@@ -13,6 +13,13 @@ DATA_PATH = (
     / "adult.data.txt"
 )
 
+CLEAN_DATA_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "data"
+    / "preprocessed"
+    / "adult_cleaned.csv"
+)
+
 
 # Dataset columns
 columns = [
@@ -126,3 +133,20 @@ def split_data(clean):
     )
 
     return train, test
+
+
+if __name__ == "__main__":
+    data = load_data()
+    clean = clean_data(data)
+
+    CLEAN_DATA_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    clean.to_csv(
+        CLEAN_DATA_PATH,
+        index=False
+    )
+
+    print(f"Saved {clean.shape} to {CLEAN_DATA_PATH}")
